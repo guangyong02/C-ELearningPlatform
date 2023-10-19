@@ -11,26 +11,25 @@ namespace ELearningPlatform
     {
         public string UserName { get; set; }
         private string _password;
-        
-
-
         public string Email { get; set; }
-        private void setPassword(string password)
+        public string Gender { get; }
+        private void SetPassword(string password)
         {
             _password = password;
         }
-        public User(string UserName, string Password, string Email) {
+        public User(string UserName, string Password, string Email,string gender) {
         
             this.UserName = UserName;
             _password = Password;
             this.Email = Email;
+            Gender = gender;
         }
 
-        public bool editPassword(string email,string password)
+        public bool EditPassword(string email,string password)
         {
             if (Email.Equals(email) && password != "")
             {
-                setPassword(password);
+                SetPassword(password);
                 return true;
             }
             else

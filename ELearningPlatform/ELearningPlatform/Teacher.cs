@@ -9,14 +9,15 @@ namespace ELearningPlatform
     internal class Teacher : User
     {
         public double Salary { get; set; }
-        public Teacher(string UserName, string Password, string Email, double salary) : base(UserName, Password, Email)
+        public Teacher(string username, string password, string email, double salary,string gender) : base(username, password, email,gender )
         {
             Salary = salary;
         }
 
         public override string ToString()
         {
-            return "Teacher " + base.ToString() + " Salary " + Salary;
+            //return "Teacher " + base.ToString() + " Salary " + Salary;
+            return "Teacher " +base.UserName;
         }
 
     }

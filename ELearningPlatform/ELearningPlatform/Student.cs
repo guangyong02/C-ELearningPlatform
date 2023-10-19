@@ -9,9 +9,14 @@ namespace ELearningPlatform
     internal class Student : User
     {
         public double studyFees;
-        public Student(string UserName, string Password, string Email, double studyFees) : base(UserName, Password, Email)
+        public Student(string username, string password, string email, double studyFees, string gender) : base(username, password, email, gender)
         {
             this.studyFees = studyFees;
+        }
+
+        public Student():base("","","","")
+        {
+            
         }
 
         public override string ToString()

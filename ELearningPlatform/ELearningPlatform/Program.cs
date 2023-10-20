@@ -44,7 +44,9 @@ namespace ELearningPlatform
                             if (currentUser != null)
                             {
                                 ClearScreen();
+                                Console.WriteLine("Welcome back {0}!", currentUser.Username);
                                 Console.WriteLine("Login Sucessfully");
+                                Console.WriteLine();
                                 if (currentUser is Teacher)
                                 {
                                     Console.WriteLine("Teacher Main Menu");
@@ -53,6 +55,7 @@ namespace ELearningPlatform
                                 else if (currentUser is Student)
                                 {
                                     Console.WriteLine("Student Main Menu");
+                                    StudentSystem((Student)currentUser, subjects);
                                 }
                             }
                             else
@@ -110,13 +113,31 @@ namespace ELearningPlatform
             int choice;
             do
             {
+                
                 Console.WriteLine("1. Do quiz");
                 Console.WriteLine("2. Watch Lesson");
                 Console.WriteLine("3. Account");
                 Console.WriteLine("4. Log out");
                 choice = ChoiceSelection("Select your choice \t:", 4);
+
+                ClearScreen();
+                switch(choice)
+                {
+                    case 1:
+                        DoQuiz(GetToSpecificSubject(subjects),currStudent);
+                        break;
+                    case 2:
+                        StudyLesson(GetToSpecificSubject(subjects));
+                        break;
+                    case 3: Setting(currStudent);
+                        break;
+                    default:
+                        break;
+                }
             } while (choice != 4);
+
         }
+
         public static void TeacherSystem(Teacher currTeacher, Dictionary<string, Subject> subjects)
         {
             int choice;
@@ -180,11 +201,10 @@ namespace ELearningPlatform
             if (platformUser.ContainsKey(tempUsername))
             {
                 string password = CheckInputNotNull("Password\t:");
-                if (platformUser[tempUsername].checkPasswor(password))
+                if (platformUser[tempUsername].CheckPasswor(password))
                 {
-
+                    
                     currentUser = platformUser[tempUsername];
-                    Console.WriteLine("Welcome back {0}!", currentUser.Username);
                     return currentUser;
                 }
                 else
@@ -208,44 +228,54 @@ namespace ELearningPlatform
 
         public static void PlayLesson(Lesson lesson)
         {
-            char tempKey;
+            string tempKey;
             do
             {
-                Stop("stop the video");
                 lesson.Play();
                 Console.ReadKey();
                 Console.WriteLine();
                 if (!lesson.IsPlaying)
                 {
-                    Console.WriteLine("The Video Ends");
-                    tempKey = 'q';
+                    Stop("quit");
+                    tempKey = "q";
                 }
                 else
                 {
                     lesson.Pause();
-                    Console.WriteLine("Enter q to quit others to play");
-                    tempKey = Console.ReadLine()[0];
+                    tempKey = CheckInputNotNull("Enter q to quit others to play \t:");
                 }
-                
-               
-            } while (tempKey != 'q');
+            } while (tempKey != "q");
+            ClearScreen();
         }
         public static void StudyLesson(Subject targetedSubject)
         {
-            targetedSubject.ShowDetailsLessons();
-            Console.WriteLine();
-            int choice=ChoiceSelection("Which u want to watch? (0 Back)", targetedSubject.Lessons.Count,0);
-            if (choice != 0) {
-                PlayLesson(targetedSubject.Lessons[choice-1]);
+            if (targetedSubject.Lessons.Count!=0)
+            {
+                targetedSubject.ShowDetailsLessons();
+                int choice = ChoiceSelection("Which u want to watch? (0 Back)", targetedSubject.Lessons.Count, 0);
+                ClearScreen();
+                if (choice != 0)
+                {
+                    PlayLesson(targetedSubject.Lessons[choice - 1]);
+                }
             }
+            else
+            {
+                ClearScreen();
+                Console.WriteLine("No availble Lessons here");
+                Stop();
+                ClearScreen();
+            }
+            
         }
 
 
         public static void Setting(User currUser)
         {
             Console.WriteLine("1. Profile");
-            Console.WriteLine("2. Back");
-            int choice=ChoiceSelection("Pick one \t:", 2);
+            Console.WriteLine("2. Change Password");
+            Console.WriteLine("3. Back");
+            int choice=ChoiceSelection("Pick one \t:", 3);
             ClearScreen();
             if (choice == 1)
             {
@@ -280,10 +310,23 @@ namespace ELearningPlatform
                     currUser.ShowDetails();
                     Stop();
                 }
-                else
-                    ClearScreen();
             }
-                
+            else if (choice == 2)
+            {
+                Console.WriteLine("Change Password");
+                string tempOldPassword = CheckInputNotNull("Enter Your Old Password\t: ");
+                string tempNewPassword = CheckInputNotNull("Enter Your New Password\t: ");
+                ClearScreen();
+                if (currUser.EditPassword(tempOldPassword, tempNewPassword))
+                    Console.WriteLine("Change Successfully");
+                else
+                    Console.WriteLine("Change Unsuccessfully");
+                Stop();
+                ClearScreen();
+            }
+            else
+                ClearScreen();
+
 
             //switch (choice)
             //{
@@ -406,7 +449,7 @@ namespace ELearningPlatform
             {
                 subjectWantToAdd = CheckInputNotNull("Enter the shortform\t:");
             } while (!subjects.ContainsKey(subjectWantToAdd));
-
+            ClearScreen();
             return subjects[subjectWantToAdd];
 
         }
@@ -621,42 +664,56 @@ namespace ELearningPlatform
         {
 
             //DisplaySubjects(subjects);
-            
+
             ////string subjectWantToDo = GetSubjectWantToModify(subjects);
             //Subject targetedSubject= GetSubjectWantToModify(subjects);
-            targetedSubject.ShowDetailsQuizzes();
-            int numberQuiz = ChoiceSelection("Which Quiz u want to Do", targetedSubject.Quizzes.Count);
-            ClearScreen();
-            int correct = 0;
-            Quiz targetedQuiz = targetedSubject.Quizzes[numberQuiz-1];
-            Console.WriteLine(targetedQuiz.Title);
-            Console.WriteLine();
-            foreach (Question question in targetedQuiz.Question)
+            if (targetedSubject.Quizzes.Count!=0)
             {
-                Console.WriteLine(question.Topic);
-                Console.Write("What is your answer :");
-                string tempAnswer = Console.ReadLine();
-                if (tempAnswer ==question.Answer)
-                    correct++;
-            }
-            //Todo Avoid Null Exception
-            double finalScore = (double)correct / targetedQuiz.Question.Count * 100;
-            Console.WriteLine("Average Score is : {0}%", finalScore);
-            if (finalScore>targetedQuiz.HighScore)
-            {
-                Console.WriteLine("You have become the high score holder with {0}",finalScore);
-                targetedQuiz.HighScore = finalScore;
-                targetedQuiz.HighScoreHolder = currectUser;
+                targetedSubject.ShowDetailsQuizzes();
+                int numberQuiz = ChoiceSelection("Which Quiz u want to Do", targetedSubject.Quizzes.Count);
+                ClearScreen();
+                int correct = 0;
+                Quiz targetedQuiz = targetedSubject.Quizzes[numberQuiz - 1];
+                if (targetedQuiz.Question.Count!=0) {
+                    Console.WriteLine(targetedQuiz.Title);
+                    Console.WriteLine();
+                    foreach (Question question in targetedQuiz.Question)
+                    {
+                        Console.WriteLine(question.Topic);
+                        Console.Write("What is your answer :");
+                        string tempAnswer = Console.ReadLine();
+                        if (tempAnswer == question.Answer)
+                            correct++;
+                    }
+                    //Todo Avoid Null Exception
+                    double finalScore = (double)correct / targetedQuiz.Question.Count * 100;
+                    Console.WriteLine("Average Score is : {0}%", finalScore);
+                    if (finalScore > targetedQuiz.HighScore)
+                    {
+                        Console.WriteLine("You have become the high score holder with {0}", finalScore);
+                        targetedQuiz.HighScore = finalScore;
+                        targetedQuiz.HighScoreHolder = currectUser;
+
+                    }
+                    else
+                        Console.WriteLine("Keep it up !");
+                    currectUser.FinishAQuiz(targetedQuiz.Title, finalScore);
+                    Console.WriteLine();
+                    targetedQuiz.ShowDetails();
+                }
+                else
+                {
+                    Console.WriteLine("Sorry this quiz is not unavailable temporary.");
+                    Stop();
+                }
                 
             }
             else
-                Console.WriteLine("Keep it up !");
-            currectUser.FinishAQuiz(targetedQuiz.Title, finalScore);
-            Console.WriteLine();
-            targetedQuiz.ShowDetails();
-            currectUser.ShowDetails();
-
-
+            {
+                Console.WriteLine("Sorry there isnt have any quiz for this subject.");
+                Stop();
+            }
+            ClearScreen();
         }
         public static void testing()
         {

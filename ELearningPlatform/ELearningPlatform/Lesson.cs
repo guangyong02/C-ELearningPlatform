@@ -43,6 +43,13 @@ namespace ELearningPlatform
                 timer = new Timer(TimerCallBack, null, currState, 1000);
             }
         }
+        public void LessonEnd()
+        {
+            IsPlaying=false;
+            Console.WriteLine("Lesson ends.");
+            currState = 0;
+            timer.Dispose();
+        }
         private void TimerCallBack(object o)
         {
             if (VideoLength > currState)
@@ -52,9 +59,7 @@ namespace ELearningPlatform
             }
             else
             {
-                Pause();
-                
-                
+                LessonEnd();
             }
         }
 

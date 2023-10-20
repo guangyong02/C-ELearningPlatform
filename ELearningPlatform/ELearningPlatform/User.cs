@@ -18,6 +18,8 @@ namespace ELearningPlatform
         {
             _password = password;
         }
+
+        //Todo Remove
         public User(string username, string password, string email,string gender) {
         
             this.Username = username;
@@ -26,9 +28,9 @@ namespace ELearningPlatform
             Gender = gender;
         }
 
-        public bool EditPassword(string email,string password)
+        public bool EditPassword(string oldPassword,string password)
         {
-            if (Email.Equals(email) && password != "")
+            if (_password.Equals(oldPassword) && password != "")
             {
                 SetPassword(password);
                 return true;
@@ -50,7 +52,7 @@ namespace ELearningPlatform
 
         //}
         //Todo Remove password 
-        public bool checkPasswor(string password)
+        public bool CheckPasswor(string password)
         {
             return _password.Equals(password);
         }

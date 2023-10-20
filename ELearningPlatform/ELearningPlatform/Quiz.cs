@@ -12,7 +12,6 @@ namespace ELearningPlatform
         public Teacher MadeBy { get; }
         public double Difficulty { get; set; }
         public List<Question> Question;
-
         public double HighScore { get; set; }
         public Student? HighScoreHolder { get; set; }
 
@@ -34,7 +33,7 @@ namespace ELearningPlatform
 
         public void ShowDetails()
         {
-            Console.WriteLine(Title + " By " +MadeBy+ " with " +Difficulty+" difficulty");
+            Console.WriteLine(Title + " By " +MadeBy+ " with " +Difficulty+" difficulty.");
             if (HighScoreHolder != null)
             {
                 Console.WriteLine("High Score Holder is " + HighScoreHolder.ToString() + " with " + HighScore);
@@ -47,7 +46,10 @@ namespace ELearningPlatform
                 Console.WriteLine(i+1 +". " + Question[i].Topic);
             }
         }
-
+        public override string ToString()
+        {
+            return Title;
+        }
 
     }
 }

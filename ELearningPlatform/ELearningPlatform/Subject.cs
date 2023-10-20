@@ -8,13 +8,15 @@ namespace ELearningPlatform
 {
     internal class Subject
     {
-        public string ShortForm {  get; set; }
-        public string SubjectTitle { get; set; }
+        public string ShortForm {  get; }
+        public string SubjectTitle { get; }
         public string SubjectDescription { get; set; }
-        public List<Quiz> Quizzes { get; set; }
+        public List<Quiz> Quizzes { get;}
+        public List<Lesson> Lessons { get; }
+
 
         //public List<Lesson>
-        
+
 
         //public Teacher HighScoreHolderTeacher { get; set; }
 
@@ -24,13 +26,19 @@ namespace ELearningPlatform
             SubjectTitle = subjectTitle;
             SubjectDescription = subjectDescription;
             Quizzes= new List<Quiz>();
+            Lessons= new List<Lesson>();
         }
         public void AddQuizz(Quiz quiz)
         {
             Quizzes.Add(quiz);
         }
 
-        public void ShowDetails()
+        public void AddLesson(Lesson lesson)
+        {
+            Lessons.Add(lesson);
+        }
+
+        public void ShowDetailsQuizzes()
         {
             Console.WriteLine($"Subject : {SubjectTitle} ({ShortForm})");
             Console.WriteLine("Quizz include");
@@ -38,6 +46,17 @@ namespace ELearningPlatform
             {
                 Console.Write(i + 1 +". ");
                 Quizzes[i].ShowDetails();
+            }
+        }
+
+        public void ShowDetailsLessons()
+        {
+            Console.WriteLine($"Subject : {SubjectTitle} ({ShortForm})");
+            Console.WriteLine("Lessons include");
+            for (int i = 0; i < Lessons.Count; i++)
+            {
+                Console.Write(i + 1 + ". ");
+                Lessons[i].ShowDetails();
             }
         }
 

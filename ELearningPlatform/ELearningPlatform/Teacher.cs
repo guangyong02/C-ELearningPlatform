@@ -17,7 +17,7 @@ namespace ELearningPlatform
         public override string ToString()
         {
             //return "Teacher " + base.ToString() + " Salary " + Salary;
-            return "Teacher " +base.UserName;
+            return "Teacher " +base.Username;
         }
 
     }

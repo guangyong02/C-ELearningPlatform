@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ namespace ELearningPlatform
 {
     internal class User
     {
-        public string UserName { get; set; }
+        public string Username { get; set; }
         private string _password;
         public string Email { get; set; }
         public string Gender { get; }
@@ -17,11 +18,11 @@ namespace ELearningPlatform
         {
             _password = password;
         }
-        public User(string UserName, string Password, string Email,string gender) {
+        public User(string username, string password, string email,string gender) {
         
-            this.UserName = UserName;
-            _password = Password;
-            this.Email = Email;
+            this.Username = username;
+            _password = password;
+            this.Email = email;
             Gender = gender;
         }
 
@@ -48,11 +49,20 @@ namespace ELearningPlatform
         //        return false;
 
         //}
-
+        //Todo Remove password 
+        public bool checkPasswor(string password)
+        {
+            return _password.Equals(password);
+        }
+        public virtual void ShowDetails()
+        {
+            Console.WriteLine("Username\t: "+Username);
+            Console.WriteLine("Email\t\t: "+Email);
+        }
         public override string ToString()
         {
             //return "User " + UserName + " with Email " + Email;
-            return "User " + UserName +" Password "+_password+ " with Email " + Email;
+            return "User " + Username +" Password "+_password+ " with Email " + Email;
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Channels;
@@ -36,12 +38,18 @@ namespace ELearningPlatform
                             if (currentUser is Teacher)
                             {
                                 Console.WriteLine("Teacher Main Menu");
-                                TeacherSystem((Teacher)currentUser, subjects);
+                                TeacherSystem((Teacher)currentUser, subjects, platformUser);
                             }
                             else if (currentUser is Student)
                             {
                                 Console.WriteLine("Student Main Menu");
-                                StudentSystem((Student)currentUser, subjects);
+                                StudentSystem((Student)currentUser, subjects, platformUser);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Admin Main Menu");
+                                AdminSystem((Admin)currentUser, subjects, platformUser);
+
                             }
                         }
                         else
@@ -96,7 +104,13 @@ namespace ELearningPlatform
             }
             else 
             {
-                string tempUsername = CheckInputNotNull("Enter your username\t\t:");
+                string tempUsername;
+                tempUsername = CheckInputNotNull("Enter your username\t\t:");
+                while (platformUser.ContainsKey(tempUsername)){
+                    Console.WriteLine("Current username is already used");
+                    Console.WriteLine("Try Again");
+                    tempUsername = CheckInputNotNull("Enter your username\t\t:");
+                }
                 string tempPasswrord = CheckInputNotNull("Enter your password\t\t:");
                 string tempGmail = CheckInputNotNull("Enter your gmail \t\t:");
                 string tempGender = CheckInputNotNull("Enter your Gender (Male\\Female)\t:");
@@ -133,8 +147,182 @@ namespace ELearningPlatform
                 }
             }
         }
+        public static void AdminSystem(Admin currAdmin, Dictionary<string, Subject> subjects, Dictionary<string, User> platformUser)
+        {
+            int choice;
+            do
+            {
+                ClearScreen();
+                Console.WriteLine("1. View All User");
+                Console.WriteLine("2. View All Subject");
+                Console.WriteLine("3. Account");
+                Console.WriteLine("4. Log out");
+                choice = ChoiceSelection("Select your choice \t:", 4);
+                ClearScreen();
+                switch (choice)
+                {
+                    case 1:
+                        ViewAllUser( platformUser);
+                        break;
+                    case 2:
+                        ViewAllSubject(subjects);
+                        break;
+                    case 3:
+                        Setting(currAdmin,platformUser);
+                        break;
+                    default:
+                        Console.WriteLine("Logging out"); Stop();
+                        break;
+                }
+            } while (choice != 4);
+        }
 
-        public static void StudentSystem(Student currStudent, Dictionary<string, Subject> subjects)
+        public static void ViewAllUser(Dictionary<string, User> platformUser)
+        {
+            foreach (KeyValuePair<string,User> user in platformUser)
+            {
+                user.Value.ShowDetails();
+                Console.WriteLine("=========================");
+            }
+            if (YesOrNo("Delete User? (Y for yes,N for no)"))
+            {
+                string tempUsername = CheckInputNotNull("Enter username to delete the user\t: ");
+
+                if (platformUser.ContainsKey(tempUsername))
+                {
+                    if (YesOrNo("Confirm? (Y for yes,N for no)"))
+                    {
+                        platformUser.Remove(tempUsername);
+                        ClearScreen();
+                        Console.WriteLine("Delete user successfully");
+                    }
+                    else
+                    {
+                        ClearScreen();
+                        Console.WriteLine("Cancelled delete user");
+                    }
+                }
+                else
+                {
+                    ClearScreen();
+                    Console.WriteLine("No such user");
+                }
+                Stop();
+            }
+        }
+
+
+        public static void ViewAllSubject(Dictionary<string, Subject> subjects)
+        {
+            int choice;
+            do
+            {
+                ClearScreen();
+                Console.WriteLine("1. View Subject");
+                Console.WriteLine("2. Add Subject");
+                Console.WriteLine("3. Delete Lesson");
+                Console.WriteLine("4. Delete Quiz");
+                Console.WriteLine("5. Back");
+                choice = ChoiceSelection("Select your choice \t:", 5);
+                ClearScreen();
+                switch (choice)
+                {
+                    case 1:
+                        DisplaySubjects(subjects);
+                        Stop();
+                        ClearScreen();
+                        break;
+                    case 2:
+                        AddSubject(subjects);
+                        break;
+                    case 3:
+                        DeleteLesson(GetToSpecificSubject(subjects));
+                        break;
+                    case 4:
+                        DeleteQuiz(GetToSpecificSubject(subjects));
+                        break;
+                    default:
+                        break;
+                }
+            } while (choice!=5);
+            
+        }
+        public static void DeleteLesson(Subject targetedSubject)
+        {
+            targetedSubject.ShowDetailsLessons();
+            int choice = ChoiceSelection("Which lesson u want to delete\t: ", targetedSubject.Lessons.Count);
+
+            if (YesOrNo("Confirm? (Y for yes,N for no)"))
+            {
+                ClearScreen();
+                targetedSubject.Lessons.RemoveAt(choice-1);
+                Console.WriteLine("Delete lesson Successfully");
+            }
+            else
+            {
+                ClearScreen();
+                Console.WriteLine("Cancelled delete lesson");
+            }
+            Stop();
+        }
+        public static void DeleteQuiz(Subject targetedSubject)
+        {
+            targetedSubject.ShowDetailsQuizzes();
+            int choice = ChoiceSelection("Which quiz u want to delete\t: ", targetedSubject.Quizzes.Count);
+
+            if (YesOrNo("Confirm? (Y for yes,N for no)"))
+            {
+                ClearScreen();
+                targetedSubject.Quizzes.RemoveAt(choice - 1);
+                Console.WriteLine("Delete quiz Successfully");
+            }
+            else
+            {
+                ClearScreen();
+                Console.WriteLine("Cancelled delete quiz");
+            }
+            Stop();
+        }
+
+
+
+        public static void AddSubject(Dictionary<string, Subject> subjects)
+        {
+            //Dictionary<string, Subject> subjects = new Dictionary<string, Subject>{
+            //    { "MT",new Subject("MT", "Mathematic", "Calculations") },
+            //    { "EN",new Subject("EN", "English", "International Language")}
+            //};
+            string tempShortform = CheckInputNotNull("Enter the shortform for the subject\t: ");
+            while (subjects.ContainsKey(tempShortform))
+            {
+                Console.WriteLine("Current subject shortform is already used");
+                Console.WriteLine("Try Again");
+                tempShortform = CheckInputNotNull("Enter the shortform for the subject\t: ");
+            }
+            string tempTitle= CheckInputNotNull("Enter the title for the subject\t\t: ");
+            string tempDescription= CheckInputNotNull("Enter the description for the subject\t: ");
+
+
+            ClearScreen();
+            Console.WriteLine($"Subject shortform \t:{tempShortform}");
+            Console.WriteLine($"Subject Title\t\t:{tempTitle}");
+            Console.WriteLine($"Subject Description\t:{tempDescription}");
+            Console.WriteLine();
+            if (YesOrNo("Confirm? (Y for yes,N for no)"))
+            {
+                subjects.Add(tempShortform, new Subject(tempShortform, tempTitle, tempDescription));
+                ClearScreen();
+                Console.WriteLine("Added Subject Successfully");
+            }
+            else
+            {
+                ClearScreen();
+                Console.WriteLine("Cancelled add subject");
+            }
+            Stop();
+        }
+
+        public static void StudentSystem(Student currStudent, Dictionary<string, Subject> subjects, Dictionary<string, User> platformUser)
         {
             int choice;
             do
@@ -155,7 +343,7 @@ namespace ELearningPlatform
                     case 2:
                         StudyLesson(GetToSpecificSubject(subjects),currStudent);
                         break;
-                    case 3: Setting(currStudent);
+                    case 3: Setting(currStudent, platformUser);
                         break;
                     default:
                         Console.WriteLine("Logging out"); Stop();
@@ -165,7 +353,7 @@ namespace ELearningPlatform
 
         }
 
-        public static void TeacherSystem(Teacher currTeacher, Dictionary<string, Subject> subjects)
+        public static void TeacherSystem(Teacher currTeacher, Dictionary<string, Subject> subjects, Dictionary<string, User> platformUser)
         {
             int choice;
             do
@@ -183,7 +371,7 @@ namespace ELearningPlatform
                         ShowSubjectDetails(GetToSpecificSubject(subjects));
                         break;
                     case 2: EditSubject(GetToSpecificSubject(subjects), currTeacher); break;
-                    case 3: Setting(currTeacher); break;
+                    case 3: Setting(currTeacher,platformUser); break;
                     default: Console.WriteLine("Logging out"); Stop(); break;
                 }
             } while (choice!=4);
@@ -248,7 +436,8 @@ namespace ELearningPlatform
             {
                 {"Poh",new Teacher("Poh", "1100", "iot@gmail", 3500, "Male") },
                 {"Jiayin",new Student("Jiayin","0214", "kitty@gmail", 300, "Female")},
-                {"Simon",new Student("Simon","unknowns", "boom@gmail", 400, "Rather not to say")}
+                {"Simon",new Student("Simon","unknowns", "boom@gmail", 400, "Rather not to say")},
+                {"Admin",new Admin("Admin","0","admin@gmail.com","rather not to say","temp@email") }
             };
             return initializeUser;
         }
@@ -274,7 +463,7 @@ namespace ELearningPlatform
         }
 
 
-        public static void Setting(User currUser)
+        public static void Setting(User currUser, Dictionary<string, User> platformUser)
         {
             Console.WriteLine("1. Profile");
             Console.WriteLine("2. Change Password");
@@ -297,7 +486,13 @@ namespace ELearningPlatform
                             tempInput = CheckInputNotNull("Enter your new username\t:");
                             if (YesOrNo("Confirm? (Y for Yes,N for No)"))
                             {
-                                currUser.Username = tempInput;
+                                //to check
+                                platformUser.Add(tempInput, currUser);
+                                
+                                platformUser[tempInput].Username= tempInput;
+                                platformUser.Remove(currUser.Username);
+
+
                             }
 
                             break;
@@ -313,6 +508,7 @@ namespace ELearningPlatform
                     Console.WriteLine("Successfully Edit");
                     currUser.ShowDetails();
                     Stop();
+                    ClearScreen();
                 }
                 else
                     ClearScreen();
@@ -322,8 +518,18 @@ namespace ELearningPlatform
                 Console.WriteLine("Change Password");
                 string tempOldPassword = CheckInputNotNull("Enter Your Old Password\t: ");
                 string tempNewPassword = CheckInputNotNull("Enter Your New Password\t: ");
+                bool successfully;
+                if(currUser is Admin)
+                {
+                    string tempBackupEmail = CheckInputNotNull("Enter Your Backup Email\t: ");
+                    successfully=((Admin)currUser).EditPassword(tempBackupEmail, tempOldPassword, tempNewPassword);
+                }
+                else
+                {
+                    successfully = currUser.EditPassword(tempOldPassword, tempNewPassword);
+                }
                 ClearScreen();
-                if (currUser.EditPassword(tempOldPassword, tempNewPassword))
+                if (successfully)
                     Console.WriteLine("Change Successfully");
                 else
                     Console.WriteLine("Change Unsuccessfully");
@@ -367,6 +573,7 @@ namespace ELearningPlatform
             { 
                 Console.WriteLine(key + "\t\t" + subjects[key].SubjectTitle);
             }
+            Console.WriteLine();
         }
 
         //Todo Put temparary User, Remove it after all  
@@ -398,8 +605,6 @@ namespace ELearningPlatform
         {
             return new Student("Jayden", "1", "@gmail", 300, "male");
         }
-
-
 
         public static void ClearScreen()
         {

@@ -26,7 +26,7 @@ namespace ELearningPlatform
             Gender = gender;
         }
 
-        public bool EditPassword(string oldPassword,string password)
+        public virtual bool EditPassword(string oldPassword,string password)
         {
             if (_password.Equals(oldPassword) && password != "")
             {

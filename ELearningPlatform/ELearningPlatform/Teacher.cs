@@ -15,6 +15,7 @@ namespace ELearningPlatform
         }
         public override void ShowDetails()
         {
+            Console.WriteLine("User Type\t: Teacher");
             base.ShowDetails();
         }
         public override string ToString()

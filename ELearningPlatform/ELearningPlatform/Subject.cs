@@ -15,11 +15,6 @@ namespace ELearningPlatform
         public List<Lesson> Lessons { get; }
 
 
-        //public List<Lesson>
-
-
-        //public Teacher HighScoreHolderTeacher { get; set; }
-
         public Subject(string shortForm,string subjectTitle, string subjectDescription)
         {
             ShortForm = shortForm;

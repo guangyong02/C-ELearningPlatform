@@ -18,8 +18,6 @@ namespace ELearningPlatform
         {
             _password = password;
         }
-
-        //Todo Remove
         public User(string username, string password, string email,string gender) {
         
             Username = username;
@@ -39,19 +37,7 @@ namespace ELearningPlatform
                 return false;
             
         }
-        //Todo add a method for change password using oldpassword 
-        //public bool editPassword(string oldPassword, string password)
-        //{
-        //    if (_password.Equals(oldPassword) && password != "")
-        //    {
-        //        setPassword(password);
-        //        return true;
-        //    }
-        //    else
-        //        return false;
 
-        //}
-        //Todo Remove password 
         public bool CheckPasswor(string password)
         {
             return _password.Equals(password);
@@ -63,7 +49,6 @@ namespace ELearningPlatform
         }
         public override string ToString()
         {
-            //return "User " + UserName + " with Email " + Email;
             return "User " + Username +" with Email " + Email;
         }
     }

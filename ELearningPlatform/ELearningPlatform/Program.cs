@@ -11,110 +11,76 @@ namespace ELearningPlatform
         static void Main(string[] args)
         {
             //Initialize Variables
-            //Todo Initialize User or Teacher
             Teacher currentTeacher = InitializeTeacher();
             Student currentStudent = InitializeStudent();
             Dictionary<string,User> platformUser = InitializeUser();
             User? currentUser;
-
-
-
-
-            //Todo Remove the casting after all 
             Dictionary<string, Subject> subjects = InitializeSubjects(currentTeacher);
 
-            //Todo Use this to check if it is a teacher
-            //if (currentUser is Teacher)
-            //{
-            //    Console.WriteLine("Is a teacher");
-            //    currentUser = (Teacher)currentUser;
-            //}
-            if (true)
+            int choice;
+            do
             {
-
-
-
-                int choice;
-                do
+                ClearScreen();
+                choice = MainMenu();
+                ClearScreen();
+                switch (choice)
                 {
-                    ClearScreen();
-                    choice = MainMenu();
-                    ClearScreen();
-                    switch (choice)
-                    {
-                        case 1:
-                            currentUser = Login(platformUser);
-                            if (currentUser != null)
-                            {
-                                ClearScreen();
-                                Console.WriteLine("Welcome back {0}!", currentUser.Username);
-                                Console.WriteLine("Login Sucessfully");
-                                Console.WriteLine();
-                                if (currentUser is Teacher)
-                                {
-                                    Console.WriteLine("Teacher Main Menu");
-                                    TeacherSystem((Teacher)currentUser, subjects);
-                                }
-                                else if (currentUser is Student)
-                                {
-                                    Console.WriteLine("Student Main Menu");
-                                    StudentSystem((Student)currentUser, subjects);
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("Cannot Login");
-                                Stop();
-                            }
-                                
-                            break;
-                        case 2:
-                            RegisterUser(platformUser);//Todo Register
-                            break;
-                        default:
+                    case 1:
+                        currentUser = Login(platformUser);
+                        if (currentUser != null)
+                        {
                             ClearScreen();
-                            Console.WriteLine("See You !");
-                            break;
-                    }
-                } while (choice!=3);
+                            Console.WriteLine("Welcome back {0}!", currentUser.Username);
+                            Console.WriteLine("Login Sucessfully");
+                            Console.WriteLine();
+                            if (currentUser is Teacher)
+                            {
+                                Console.WriteLine("Teacher Main Menu");
+                                TeacherSystem((Teacher)currentUser, subjects);
+                            }
+                            else if (currentUser is Student)
+                            {
+                                Console.WriteLine("Student Main Menu");
+                                StudentSystem((Student)currentUser, subjects);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Cannot Login");
+                            Stop();
+                        }
+                                
+                        break;
+                    case 2:
+                        RegisterUser(platformUser);//Todo Register
+                        break;
+                    default:
+                        ClearScreen();
+                        Console.WriteLine("See You !");
+                        break;
+                }
+            } while (choice!=3);
                 
                 
-            }
-            else
-            {
-                StudyLesson(GetToSpecificSubject(subjects),currentStudent);
-                Setting(currentTeacher);
+            
 
-                Setting(currentStudent);
-                //===================================
+            //StudyLesson(GetToSpecificSubject(subjects),currentStudent);
+            //Setting(currentTeacher);
 
-                Lesson lesson = new Lesson("Testing", ".mp4", 5, currentTeacher);
-                char tempKey;
+            //Setting(currentStudent);
+            ////===================================
+
+            //Lesson lesson = new Lesson("Testing", ".mp4", 5, currentTeacher);
+            //char tempKey;
                 
 
-                DoQuiz(GetToSpecificSubject(subjects), currentStudent);
+            //DoQuiz(GetToSpecificSubject(subjects), currentStudent);
 
-                //Edit subject still need add one more Lesson;
-                EditSubject(GetToSpecificSubject(subjects), currentTeacher);
-
-
-
-                //testing();
-                //switch (MainMenu())
-                //{
-                //    case 1: break;
-                //    case 2: break;
-                //    case 3: break;
-                //    default:
-                //        break;
-                //}
-            }
-
-
+            ////Edit subject still need add one more Lesson;
+            //EditSubject(GetToSpecificSubject(subjects), currentTeacher);
         }
         public static void RegisterUser(Dictionary<string, User> platformUser)
         {
-            //Console.WriteLine(platformUser);
 
             ClearScreen();
             Console.WriteLine("Register User");
@@ -166,14 +132,6 @@ namespace ELearningPlatform
                     Stop();
                 }
             }
-            
-
-
-
-
-
-
-            
         }
 
         public static void StudentSystem(Student currStudent, Dictionary<string, Subject> subjects)
@@ -294,28 +252,6 @@ namespace ELearningPlatform
             };
             return initializeUser;
         }
-
-        //public static void PlayLesson(Lesson lesson)
-        //{
-        //    string tempKey;
-        //    do
-        //    {
-        //        lesson.Play();
-        //        Console.ReadKey();
-        //        Console.WriteLine();
-        //        if (!lesson.IsPlaying)
-        //        {
-        //            Stop("quit");
-        //            tempKey = "q";
-        //        }
-        //        else
-        //        {
-        //            lesson.Pause();
-        //            tempKey = CheckInputNotNull("Enter q to quit others to play \t:");
-        //        }
-        //    } while (tempKey != "q");
-        //    ClearScreen();
-        //}
         public static void StudyLesson(Subject targetedSubject,Student currStudent)
         {
             if (targetedSubject.Lessons.Count!=0)
@@ -324,10 +260,8 @@ namespace ELearningPlatform
                 int choice = ChoiceSelection("Which u want to watch? (0 Back)", targetedSubject.Lessons.Count, 0);
                 ClearScreen();
                 if (choice != 0)
-                {
                     targetedSubject.Lessons[choice - 1].Learning(currStudent);
-                    //PlayLesson(targetedSubject.Lessons[choice - 1]);
-                }
+                
             }
             else
             {
@@ -398,17 +332,6 @@ namespace ELearningPlatform
             }
             else
                 ClearScreen();
-
-
-            //switch (choice)
-            //{
-            //    case 1: 
-
-
-            //        break;
-            //    case 2: break;
-            //}
-
         }
         public static void Stop(string words="Continue")
         {
@@ -477,11 +400,6 @@ namespace ELearningPlatform
         }
 
 
-        //public static void InitializeVariables(User currentUser,Dictionary<string, Subject> subjects)
-        //{
-        //    currentUser = new Teacher("Sean", "1100", "Email", 3500, "Male");
-            
-        //}
 
         public static void ClearScreen()
         {
@@ -539,15 +457,6 @@ namespace ELearningPlatform
         }
         public static void EditSubject(Subject targetedSubject,Teacher currTeacher)
         {
-           
-            //Console.WriteLine("Which Subject u want to add questions or add subject (Enter the shortform) ");
-            //string subjectWantToAdd;
-            //do
-            //{
-            //    subjectWantToAdd = Console.ReadLine();
-            //} while (!subjects.ContainsKey(subjectWantToAdd));
-            
-
             ClearScreen();
             Console.WriteLine("1. Add Question");
             Console.WriteLine("2. Add Quiz");
@@ -734,11 +643,6 @@ namespace ELearningPlatform
         }
         public static void DoQuiz(Subject targetedSubject, Student currectUser)
         {
-
-            //DisplaySubjects(subjects);
-
-            ////string subjectWantToDo = GetSubjectWantToModify(subjects);
-            //Subject targetedSubject= GetSubjectWantToModify(subjects);
             if (targetedSubject.Quizzes.Count!=0)
             {
                 targetedSubject.ShowDetailsQuizzes();
@@ -794,96 +698,6 @@ namespace ELearningPlatform
                 Stop();
             }
             ClearScreen();
-        }
-        public static void testing()
-        {
-            //Subject mathSubject = new Subject("MT", "Math", "Primary School Math");
-            //Quiz quizz1 = new Quiz("math 2021", (Teacher)currentUser, 3.5);
-            //if (YesOrNo("add question"))
-            //{
-                
-            //    mathSubject.AddQuizz(quizz1);
-
-            //    mathSubject.ShowDetails();
-                
-
-            //    //SubjectQuizz mathSubject = new("Math", "Primary School Math");
-            //    //Dictionary<string, SubjectQuizz> subjectInPlatform = new Dictionary<string, SubjectQuizz>();
-            //    //subjectInPlatform.Add(mathSubject.SubjectTitle, mathSubject);
-            //    List<Subject> subjectQuizzs = new List<Subject>();
-            //    List<Subject> subjectInPlatform = subjectQuizzs;
-            //    //Console.WriteLine(subjectInPlatform.Count);
-            //    subjectInPlatform.Add(mathSubject);
-            //    //Console.WriteLine(subjectInPlatform[0]);
-
-            //    //Console.WriteLine("helo");
-
-            //    //Console.WriteLine(mathSubject.ToString());
-
-
-
-            //    Console.WriteLine("Enter the question :");
-            //    string? tempQuestion = Console.ReadLine();
-            //    Console.WriteLine("Enter the answer for the questions");
-            //    string? tempAnswer = Console.ReadLine();
-            //    Console.WriteLine("Explainations ? ");
-            //    string? tempExplainations = Console.ReadLine();
-
-            //    //for (int i = 0; i < subjectInPlatform.Count; i++)
-            //    //{
-            //    //    Console.WriteLine($"{i + 1}. " + subjectInPlatform.ElementAt(i).Value.SubjectTitle);
-            //    //}
-            //    for (int i = 0; i < subjectInPlatform.Count; i++)
-            //    {
-            //        Console.WriteLine($"{i + 1}. " + subjectInPlatform[i].SubjectTitle);
-            //    }
-
-
-            //    int subjectNumber;
-            //    do
-            //    {
-            //        Console.WriteLine("Number for the subject u want to add");
-            //    } while (!int.TryParse(Console.ReadLine(), out subjectNumber) || subjectNumber - 1 > subjectInPlatform.Count);
-            //    Console.WriteLine("The questions is :{0}", tempQuestion);
-            //    Console.WriteLine("The answer is :{0}", tempAnswer);
-            //    Console.WriteLine("The explainations is :{0}", tempExplainations);
-            //    //Console.WriteLine($"The subject is {subjectInPlatform.ElementAt(subjectNumber-1).Value.SubjectTitle}");
-            //    string? tempYesOrNo;
-            //    do
-            //    {
-            //        Console.WriteLine("Confirm ? (Y for Yes, N for No)");
-            //        tempYesOrNo = Console.ReadLine();
-            //    } while (tempYesOrNo != "Y" && tempYesOrNo != "N");
-
-                //foreach (SubjectQuizz quizz in subjectInPlatform)
-                //{
-                //    Console.WriteLine(quizz.SubjectTitle);
-                //    Console.WriteLine("Helo");
-                //}
-
-                //for(int i = 0;i<subjectInPlatform.Count;i++)
-                //{
-                //    Console.WriteLine($"{i+1}. "+subjectInPlatform.ElementAt(i).Value.SubjectTitle);
-                //}
-
-
-                //Console.ReadLine();
-
-
-
-
-
-
-
-
-                //User testing = new User("Jayden", "1", "@gmail.com");
-                //Console.WriteLine(testing);
-                //Teacher testingTeacher = new Teacher("Sean", "wowwa", "@gmail.com", 5000);
-                //testingTeacher.editPassword("@gmail.com", "2");
-                //Console.WriteLine(testingTeacher.ToString());
-                //Student stud1 = new Student("Jiayin", "hehe", "@gmail.com", 1000);
-                //Console.WriteLine(stud1.ToString());
-            //}
         }
     }
 }

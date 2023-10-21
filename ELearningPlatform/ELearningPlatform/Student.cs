@@ -58,8 +58,6 @@ namespace ELearningPlatform
 
         }
 
-
-        //Todo Remove password 
         public override string ToString()
         {
             return "Student " + base.ToString() + " StudyFees " + StudyFees;

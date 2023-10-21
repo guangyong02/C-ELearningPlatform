@@ -25,9 +25,5 @@ namespace ELearningPlatform
                 "\nIt is because " +Explaination;
         }
 
-
-
-
-
     }
 }

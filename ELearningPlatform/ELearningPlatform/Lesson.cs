@@ -7,7 +7,7 @@ using System.Transactions;
 
 namespace ELearningPlatform
 {
-    internal class Lesson
+    internal class Lesson :ILearningMaterials
     {
         public string LessonTitle { get; }
         public string VideoPath { get; }
@@ -47,7 +47,7 @@ namespace ELearningPlatform
         {
             IsPlaying=false;
             Console.WriteLine("Lesson ends.");
-            currState = 0;
+            currState = -1;
             timer.Dispose();
         }
         private void TimerCallBack(object o)
@@ -77,5 +77,31 @@ namespace ELearningPlatform
             }
         }
 
+        public void Learning(Student currStudent)
+        {
+            string tempKey;
+            do
+            {
+                Play();
+                Console.ReadKey();
+                Console.WriteLine();
+                if (!IsPlaying)
+                {
+                    Program.Stop("quit");
+                    tempKey = "q";
+                }
+                else
+                {
+                    Pause();
+                    tempKey = Program.CheckInputNotNull("Enter q to quit, others to continue \t:");
+                }
+            } while (tempKey != "q");
+            if (currState == -1)
+            {
+                currStudent.FinishALesson(LessonTitle);
+                currState = 0; 
+            }
+            Program.ClearScreen();
+        }
     }
 }

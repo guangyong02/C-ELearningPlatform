@@ -13,7 +13,10 @@ namespace ELearningPlatform
         {
             Salary = salary;
         }
-
+        public override void ShowDetails()
+        {
+            base.ShowDetails();
+        }
         public override string ToString()
         {
             //return "Teacher " + base.ToString() + " Salary " + Salary;

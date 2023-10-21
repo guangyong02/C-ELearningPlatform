@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ELearningPlatform
 {
-    internal class Quiz
+    internal class Quiz: ILearningMaterials
     {
         public string Title {  get; set; }
         public Teacher MadeBy { get; }
@@ -14,7 +14,6 @@ namespace ELearningPlatform
         public List<Question> Question;
         public double HighScore { get; set; }
         public Student? HighScoreHolder { get; set; }
-
 
         public Quiz(string title, Teacher madeBy, double difficulty)
         {
@@ -51,5 +50,31 @@ namespace ELearningPlatform
             return Title;
         }
 
+        public void Learning(Student currStudent)
+        {
+            Console.WriteLine(Title);
+            Console.WriteLine();
+            int correct = 0;
+            foreach (Question question in Question)
+            {
+                Console.WriteLine(question.Topic);
+                Console.Write("What is your answer :");
+                if (question.Answer.Equals(Console.ReadLine()))
+                    correct++;
+            }
+            Program.ClearScreen();
+            double finalScore = (double)correct / Question.Count * 100;
+            Console.WriteLine("Average Score is : {0}%", finalScore);
+            if (finalScore > HighScore)
+            {
+                Console.WriteLine("You have become the high score holder with {0}%", finalScore);
+                HighScore = finalScore;
+                HighScoreHolder = currStudent;
+            }
+            else
+                Console.WriteLine("Keep it up {0}!",currStudent.Username);
+            currStudent.FinishAQuiz(Title, finalScore);
+            Console.WriteLine();
+        }
     }
 }

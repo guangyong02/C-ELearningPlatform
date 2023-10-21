@@ -22,9 +22,9 @@ namespace ELearningPlatform
         //Todo Remove
         public User(string username, string password, string email,string gender) {
         
-            this.Username = username;
+            Username = username;
             _password = password;
-            this.Email = email;
+            Email = email;
             Gender = gender;
         }
 
@@ -64,7 +64,7 @@ namespace ELearningPlatform
         public override string ToString()
         {
             //return "User " + UserName + " with Email " + Email;
-            return "User " + Username +" Password "+_password+ " with Email " + Email;
+            return "User " + Username +" with Email " + Email;
         }
     }
 }

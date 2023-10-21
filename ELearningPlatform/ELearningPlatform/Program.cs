@@ -31,6 +31,9 @@ namespace ELearningPlatform
             //}
             if (true)
             {
+
+
+
                 int choice;
                 do
                 {
@@ -66,6 +69,7 @@ namespace ELearningPlatform
                                 
                             break;
                         case 2:
+                            RegisterUser(platformUser);//Todo Register
                             break;
                         default:
                             ClearScreen();
@@ -78,7 +82,7 @@ namespace ELearningPlatform
             }
             else
             {
-                StudyLesson(GetToSpecificSubject(subjects));
+                StudyLesson(GetToSpecificSubject(subjects),currentStudent);
                 Setting(currentTeacher);
 
                 Setting(currentStudent);
@@ -108,6 +112,70 @@ namespace ELearningPlatform
 
 
         }
+        public static void RegisterUser(Dictionary<string, User> platformUser)
+        {
+            //Console.WriteLine(platformUser);
+
+            ClearScreen();
+            Console.WriteLine("Register User");
+            Console.WriteLine();
+            Console.WriteLine("1. Student");
+            Console.WriteLine("2. Teacher");
+            Console.WriteLine("3. Back");
+            int choice = ChoiceSelection("What is your role or identity? :", 3);
+            ClearScreen();
+            
+            if (choice == 3){
+                return;
+            }
+            else 
+            {
+                string tempUsername = CheckInputNotNull("Enter your username\t\t:");
+                string tempPasswrord = CheckInputNotNull("Enter your password\t\t:");
+                string tempGmail = CheckInputNotNull("Enter your gmail \t\t:");
+                string tempGender = CheckInputNotNull("Enter your Gender (Male\\Female)\t:");
+                double tempFigure;
+                Console.WriteLine();
+                Console.WriteLine($"Your username\t:{tempUsername}");
+                Console.WriteLine($"Your password\t:{tempPasswrord}");
+                Console.WriteLine($"Your gmail\t:{tempGmail}");
+                Console.WriteLine($"Your gender\t:{tempGender}");
+                if (choice == 1)
+                {
+                    tempFigure = 300;
+                    Console.WriteLine("Your fee will be RM{0}.", tempFigure);
+                }
+                else 
+                {
+                    tempFigure = 3000;
+                    Console.WriteLine("Your salary will be RM{0} at the beginning.", tempFigure);
+                }
+                Console.WriteLine();
+                if (YesOrNo("Confirm ? (Y for Yes, N for No)"))
+                {
+                    if (choice == 1)
+                    {
+                        platformUser.Add(tempUsername, new Student(tempUsername, tempPasswrord, tempGmail, tempFigure, tempGender));
+                    }
+                    else if (choice == 2)
+                    {
+                        platformUser.Add(tempUsername, new Teacher(tempUsername, tempPasswrord, tempGmail, tempFigure, tempGender));
+                    }
+                    ClearScreen();
+                    Console.WriteLine("Successfully register");
+                    Stop();
+                }
+            }
+            
+
+
+
+
+
+
+            
+        }
+
         public static void StudentSystem(Student currStudent, Dictionary<string, Subject> subjects)
         {
             int choice;
@@ -127,11 +195,12 @@ namespace ELearningPlatform
                         DoQuiz(GetToSpecificSubject(subjects),currStudent);
                         break;
                     case 2:
-                        StudyLesson(GetToSpecificSubject(subjects));
+                        StudyLesson(GetToSpecificSubject(subjects),currStudent);
                         break;
                     case 3: Setting(currStudent);
                         break;
                     default:
+                        Console.WriteLine("Logging out"); Stop();
                         break;
                 }
             } while (choice != 4);
@@ -226,28 +295,28 @@ namespace ELearningPlatform
             return initializeUser;
         }
 
-        public static void PlayLesson(Lesson lesson)
-        {
-            string tempKey;
-            do
-            {
-                lesson.Play();
-                Console.ReadKey();
-                Console.WriteLine();
-                if (!lesson.IsPlaying)
-                {
-                    Stop("quit");
-                    tempKey = "q";
-                }
-                else
-                {
-                    lesson.Pause();
-                    tempKey = CheckInputNotNull("Enter q to quit others to play \t:");
-                }
-            } while (tempKey != "q");
-            ClearScreen();
-        }
-        public static void StudyLesson(Subject targetedSubject)
+        //public static void PlayLesson(Lesson lesson)
+        //{
+        //    string tempKey;
+        //    do
+        //    {
+        //        lesson.Play();
+        //        Console.ReadKey();
+        //        Console.WriteLine();
+        //        if (!lesson.IsPlaying)
+        //        {
+        //            Stop("quit");
+        //            tempKey = "q";
+        //        }
+        //        else
+        //        {
+        //            lesson.Pause();
+        //            tempKey = CheckInputNotNull("Enter q to quit others to play \t:");
+        //        }
+        //    } while (tempKey != "q");
+        //    ClearScreen();
+        //}
+        public static void StudyLesson(Subject targetedSubject,Student currStudent)
         {
             if (targetedSubject.Lessons.Count!=0)
             {
@@ -256,7 +325,8 @@ namespace ELearningPlatform
                 ClearScreen();
                 if (choice != 0)
                 {
-                    PlayLesson(targetedSubject.Lessons[choice - 1]);
+                    targetedSubject.Lessons[choice - 1].Learning(currStudent);
+                    //PlayLesson(targetedSubject.Lessons[choice - 1]);
                 }
             }
             else
@@ -310,6 +380,8 @@ namespace ELearningPlatform
                     currUser.ShowDetails();
                     Stop();
                 }
+                else
+                    ClearScreen();
             }
             else if (choice == 2)
             {
@@ -672,34 +744,42 @@ namespace ELearningPlatform
                 targetedSubject.ShowDetailsQuizzes();
                 int numberQuiz = ChoiceSelection("Which Quiz u want to Do", targetedSubject.Quizzes.Count);
                 ClearScreen();
-                int correct = 0;
+                
                 Quiz targetedQuiz = targetedSubject.Quizzes[numberQuiz - 1];
                 if (targetedQuiz.Question.Count!=0) {
-                    Console.WriteLine(targetedQuiz.Title);
-                    Console.WriteLine();
-                    foreach (Question question in targetedQuiz.Question)
-                    {
-                        Console.WriteLine(question.Topic);
-                        Console.Write("What is your answer :");
-                        string tempAnswer = Console.ReadLine();
-                        if (tempAnswer == question.Answer)
-                            correct++;
-                    }
-                    //Todo Avoid Null Exception
-                    double finalScore = (double)correct / targetedQuiz.Question.Count * 100;
-                    Console.WriteLine("Average Score is : {0}%", finalScore);
-                    if (finalScore > targetedQuiz.HighScore)
-                    {
-                        Console.WriteLine("You have become the high score holder with {0}", finalScore);
-                        targetedQuiz.HighScore = finalScore;
-                        targetedQuiz.HighScoreHolder = currectUser;
+                    targetedQuiz.Learning(currectUser);
+                    Stop();
+                        //Todo what if we do not have finalScore.
+                        //Console.WriteLine("You have become the high score holder with {0}", targetedQuiz.HighScore);
+                        //targetedQuiz.HighScoreHolder = currectUser;
+                        //Console.WriteLine("Keep it up !");
 
-                    }
-                    else
-                        Console.WriteLine("Keep it up !");
-                    currectUser.FinishAQuiz(targetedQuiz.Title, finalScore);
-                    Console.WriteLine();
-                    targetedQuiz.ShowDetails();
+                    //int correct = 0;
+                    //Console.WriteLine(targetedQuiz.Title);
+                    //Console.WriteLine();
+                    //foreach (Question question in targetedQuiz.Question)
+                    //{
+                    //    Console.WriteLine(question.Topic);
+                    //    Console.Write("What is your answer :");
+                    //    string tempAnswer = Console.ReadLine();
+                    //    if (tempAnswer == question.Answer)
+                    //        correct++;
+                    //}
+                    ////Todo Avoid Null Exception
+                    //double finalScore = (double)correct / targetedQuiz.Question.Count * 100;
+                    //Console.WriteLine("Average Score is : {0}%", finalScore);
+                    //if (finalScore > targetedQuiz.HighScore)
+                    //{
+                    //    Console.WriteLine("You have become the high score holder with {0}", finalScore);
+                    //    targetedQuiz.HighScore = finalScore;
+                    //    targetedQuiz.HighScoreHolder = currectUser;
+
+                    //}
+                    //else
+                    //    Console.WriteLine("Keep it up !");
+                    //currectUser.FinishAQuiz(targetedQuiz.Title, finalScore);
+                    //Console.WriteLine();
+                    //targetedQuiz.ShowDetails();
                 }
                 else
                 {

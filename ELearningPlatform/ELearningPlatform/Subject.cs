@@ -54,15 +54,10 @@ namespace ELearningPlatform
                 Lessons[i].ShowDetails();
             }
         }
-
-
         public override string ToString()
         {
             return" is the high score holder for " + SubjectTitle +
                 " with score ";
         }
-
-
-
     }
 }

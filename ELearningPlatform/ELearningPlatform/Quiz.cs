@@ -64,10 +64,10 @@ namespace ELearningPlatform
             }
             Program.ClearScreen();
             double finalScore = (double)correct / Question.Count * 100;
-            Console.WriteLine("Average Score is : {0}%", finalScore);
+            Console.WriteLine("Average Score is : {0}%", Math.Round(finalScore,2));
             if (finalScore > HighScore)
             {
-                Console.WriteLine("You have become the high score holder with {0}%", finalScore);
+                Console.WriteLine("You have become the high score holder with {0}%", Math.Round(finalScore, 2));
                 HighScore = finalScore;
                 HighScoreHolder = currStudent;
             }

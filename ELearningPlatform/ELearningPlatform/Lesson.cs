@@ -82,6 +82,7 @@ namespace ELearningPlatform
             string tempKey;
             do
             {
+                Console.WriteLine("Press any key to stop.");
                 Play();
                 Console.ReadKey();
                 Console.WriteLine();

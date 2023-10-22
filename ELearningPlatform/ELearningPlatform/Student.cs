@@ -41,7 +41,7 @@ namespace ELearningPlatform
                 int count = 0;
                 foreach (KeyValuePair<string,double> quizTaken in QuizTaken)
                 {
-                    Console.WriteLine($"{++count}. {quizTaken.Key,-15}" + "\t\t: "+quizTaken.Value+"%");
+                    Console.WriteLine($"{++count}. {quizTaken.Key,-15}" + "\t\t: "+Math.Round(quizTaken.Value,2)+"%");
                 }
             }
             if (LessonTaken.Count > 0)

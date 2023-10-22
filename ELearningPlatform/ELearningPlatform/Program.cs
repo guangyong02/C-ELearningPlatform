@@ -671,7 +671,6 @@ namespace ELearningPlatform
             return subjects[subjectWantToAdd];
 
         }
-
         public static int ChoiceSelection(string question,int max, int min = 1)
         {
             Console.WriteLine();
@@ -832,7 +831,6 @@ namespace ELearningPlatform
             } while (YesOrNo("Continue Add Questions?"));
             ClearScreen();
         }
-
         public static void AddQuiz(Subject targetedSubject,Teacher currTeacher)
         {
             ClearScreen();
@@ -864,7 +862,6 @@ namespace ELearningPlatform
                 Console.WriteLine("Cancelled Modification");
             }
         }
-
         public static void AddLesson(Subject targetedSubject, Teacher currTeacher)
         {
             string tempLessonName = CheckInputNotNull("Enter Lesson Name\t:");

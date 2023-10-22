@@ -60,7 +60,7 @@ namespace ELearningPlatform
                                 
                         break;
                     case 2:
-                        RegisterUser(platformUser);//Todo Register
+                        RegisterUser(platformUser);
                         break;
                     default:
                         ClearScreen();
@@ -211,7 +211,6 @@ namespace ELearningPlatform
             }
         }
 
-
         public static void ViewAllSubject(Dictionary<string, Subject> subjects)
         {
             int choice;
@@ -249,42 +248,59 @@ namespace ELearningPlatform
         }
         public static void DeleteLesson(Subject targetedSubject)
         {
-            targetedSubject.ShowDetailsLessons();
-            int choice = ChoiceSelection("Which lesson u want to delete\t: ", targetedSubject.Lessons.Count);
-
-            if (YesOrNo("Confirm? (Y for yes,N for no)"))
+            if (targetedSubject.Lessons.Count!=0)
             {
-                ClearScreen();
-                targetedSubject.Lessons.RemoveAt(choice-1);
-                Console.WriteLine("Delete lesson Successfully");
+                targetedSubject.ShowDetailsLessons();
+                int choice = ChoiceSelection("Which lesson u want to delete\t: ", targetedSubject.Lessons.Count);
+
+                if (YesOrNo("Confirm? (Y for yes,N for no)"))
+                {
+                    ClearScreen();
+                    targetedSubject.Lessons.RemoveAt(choice - 1);
+                    Console.WriteLine("Delete lesson Successfully");
+                }
+                else
+                {
+                    ClearScreen();
+                    Console.WriteLine("Cancelled delete lesson");
+                }
+                Stop();
             }
             else
             {
                 ClearScreen();
-                Console.WriteLine("Cancelled delete lesson");
+                Console.WriteLine("No available Lesson");
+                Stop();
             }
-            Stop();
+            
         }
         public static void DeleteQuiz(Subject targetedSubject)
         {
-            targetedSubject.ShowDetailsQuizzes();
-            int choice = ChoiceSelection("Which quiz u want to delete\t: ", targetedSubject.Quizzes.Count);
-
-            if (YesOrNo("Confirm? (Y for yes,N for no)"))
+            if (targetedSubject.Quizzes.Count != 0)
             {
-                ClearScreen();
-                targetedSubject.Quizzes.RemoveAt(choice - 1);
-                Console.WriteLine("Delete quiz Successfully");
+                targetedSubject.ShowDetailsQuizzes();
+                int choice = ChoiceSelection("Which quiz u want to delete\t: ", targetedSubject.Quizzes.Count);
+
+                if (YesOrNo("Confirm? (Y for yes,N for no)"))
+                {
+                    ClearScreen();
+                    targetedSubject.Quizzes.RemoveAt(choice - 1);
+                    Console.WriteLine("Delete quiz Successfully");
+                }
+                else
+                {
+                    ClearScreen();
+                    Console.WriteLine("Cancelled delete quiz");
+                }
+                Stop();
             }
             else
             {
                 ClearScreen();
-                Console.WriteLine("Cancelled delete quiz");
+                Console.WriteLine("No available Quizz");
+                Stop();
             }
-            Stop();
         }
-
-
 
         public static void AddSubject(Dictionary<string, Subject> subjects)
         {
@@ -461,7 +477,6 @@ namespace ELearningPlatform
             }
             
         }
-
 
         public static void Setting(User currUser, Dictionary<string, User> platformUser)
         {

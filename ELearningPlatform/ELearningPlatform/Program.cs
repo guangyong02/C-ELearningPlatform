@@ -677,20 +677,25 @@ namespace ELearningPlatform
         }
         public static void EditSubject(Subject targetedSubject,Teacher currTeacher)
         {
-            ClearScreen();
-            Console.WriteLine("1. Add Question");
-            Console.WriteLine("2. Add Quiz");
-            Console.WriteLine("3. Add Lesson");
-            Console.WriteLine("4. Back");
-            int choice = ChoiceSelection("Enter your choice", 4);
-            ClearScreen();
-            switch (choice)
+            int choice;
+            do
             {
-                case 1: AddQuestion(targetedSubject); break;
-                case 2: AddQuiz(targetedSubject,currTeacher); break;
-                case 3: AddLesson(targetedSubject, currTeacher);break;
-                default: break;
-            }
+                ClearScreen();
+                Console.WriteLine("1. Add Question");
+                Console.WriteLine("2. Add Quiz");
+                Console.WriteLine("3. Add Lesson");
+                Console.WriteLine("4. Back");
+                choice = ChoiceSelection("Enter your choice", 4);
+                ClearScreen();
+                switch (choice)
+                {
+                    case 1: AddQuestion(targetedSubject); break;
+                    case 2: AddQuiz(targetedSubject, currTeacher); break;
+                    case 3: AddLesson(targetedSubject, currTeacher); break;
+                    default: break;
+                }
+            } while (choice!=4);
+            
 
 
 
@@ -815,7 +820,7 @@ namespace ELearningPlatform
                     Console.WriteLine("Cancelled Modification");
                     Stop();
                 }
-
+                Console.WriteLine();
             } while (YesOrNo("Continue Add Questions?"));
             ClearScreen();
         }

@@ -775,6 +775,7 @@ namespace ELearningPlatform
             Console.WriteLine(targetedSubject.Quizzes[numberQuiz - 1].Title);
             do
             {
+                ClearScreen();
                 Console.WriteLine("Enter the question :");
                 string? tempQuestion = Console.ReadLine();
                 Console.WriteLine("Enter the answer for the questions");
@@ -797,8 +798,11 @@ namespace ELearningPlatform
                 {
                     ClearScreen();
                     Console.WriteLine("Cancelled Modification");
+                    Stop();
                 }
+
             } while (YesOrNo("Continue Add Questions?"));
+            ClearScreen();
         }
 
         public static void AddQuiz(Subject targetedSubject,Teacher currTeacher)
@@ -815,14 +819,16 @@ namespace ELearningPlatform
             double tempDifficulty;
             do
             {
-                Console.WriteLine("Enter the Difficulty for the quiz :");
-            } while (!double.TryParse(Console.ReadLine(), out tempDifficulty));
+                Console.WriteLine("Enter the Difficulty for the quiz ( range from 1-5):");
+            } while (!double.TryParse(Console.ReadLine(), out tempDifficulty) || !(tempDifficulty >= 1 && tempDifficulty<=5) );
             Console.WriteLine("The Title for the quiz is \t:{0}", tempTitle);
             Console.WriteLine("The Difficulty is \t\t:{0}", tempDifficulty);
             if (YesOrNo("Confirm add ? (Y for yes, N for No)"))
             {
                 targetedSubject.AddQuizz(new Quiz(tempTitle, currTeacher, tempDifficulty));
+                ClearScreen();
                 Console.WriteLine("Sucessfully add Quiz");
+                Stop();
             }
             else
             {

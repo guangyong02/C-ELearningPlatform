@@ -162,7 +162,7 @@ namespace ELearningPlatform
                 switch (choice)
                 {
                     case 1:
-                        ViewAllUser( platformUser);
+                        ViewAllUser(currAdmin,platformUser);
                         break;
                     case 2:
                         ViewAllSubject(subjects);
@@ -177,7 +177,7 @@ namespace ELearningPlatform
             } while (choice != 4);
         }
 
-        public static void ViewAllUser(Dictionary<string, User> platformUser)
+        public static void ViewAllUser(Admin currAdmin,Dictionary<string, User> platformUser)
         {
             foreach (KeyValuePair<string,User> user in platformUser)
             {
@@ -187,26 +187,34 @@ namespace ELearningPlatform
             if (YesOrNo("Delete User? (Y for yes,N for no)"))
             {
                 string tempUsername = CheckInputNotNull("Enter username to delete the user\t: ");
-
-                if (platformUser.ContainsKey(tempUsername))
+                if (currAdmin.Username.Equals(tempUsername))
                 {
-                    if (YesOrNo("Confirm? (Y for yes,N for no)"))
+                    ClearScreen();
+                    Console.WriteLine("You cant delete yourself !");
+                }
+                else
+                {
+                    if (platformUser.ContainsKey(tempUsername))
                     {
-                        platformUser.Remove(tempUsername);
-                        ClearScreen();
-                        Console.WriteLine("Delete user successfully");
+                        if (YesOrNo("Confirm? (Y for yes,N for no)"))
+                        {
+                            platformUser.Remove(tempUsername);
+                            ClearScreen();
+                            Console.WriteLine("Delete user successfully");
+                        }
+                        else
+                        {
+                            ClearScreen();
+                            Console.WriteLine("Cancelled delete user");
+                        }
                     }
                     else
                     {
                         ClearScreen();
-                        Console.WriteLine("Cancelled delete user");
+                        Console.WriteLine("No such user");
                     }
                 }
-                else
-                {
-                    ClearScreen();
-                    Console.WriteLine("No such user");
-                }
+                
                 Stop();
             }
         }
